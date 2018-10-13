@@ -18,25 +18,30 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 
 app.get('/', 
-(req, res) => {
-  res.render('index');
-});
+  (req, res) => {
+    res.render('index');
+  }
+);
 
 app.get('/create', 
-(req, res) => {
-  res.render('index');
-});
+  (req, res) => {
+    res.render('index');
+  }
+);
 
 app.get('/links', 
-(req, res, next) => {
-  models.Links.getAll()
-    .then(links => {
-      res.status(200).send(links);
-    })
-    .error(error => {
-      res.status(500).send(error);
-    });
-});
+  (req, res, next) => {
+    models.Links.getAll()
+      .then(links => {
+        res.status(200).send(links);
+      }
+      )
+      .error(error => {
+        res.status(500).send(error);
+      }
+    );
+  }
+);
 
 app.post('/links', 
 (req, res, next) => {
@@ -116,7 +121,10 @@ app.post('/login',
         throw results
       } else {
         console.log('compare', password, results.password, results.salt);
-        models.Users.compare(password, results.password, results.salt);
+        var correctPassword = models.Users.compare(password, results.password, results.salt);
+        if(!correctPassword) {
+          throw error;
+        }
       }
     })
     .then(() => {
@@ -124,11 +132,8 @@ app.post('/login',
       res.render('index');
       res.end();
     })
-    .error(error => {
-      res.status(500).send(error);
-    })
     .catch(userId => {
-      res.status(200).send(userId);
+      res.status(500).send();
     });
 });
   //get username
