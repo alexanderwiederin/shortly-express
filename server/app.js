@@ -119,7 +119,11 @@ app.post('/login',
         models.Users.compare(password, results.password, results.salt);
       }
     })
-    .then(() => console.log('login success'))
+    .then(() => {
+      console.log('login success');
+      res.render('index');
+      res.end();
+    })
     .error(error => {
       res.status(500).send(error);
     })

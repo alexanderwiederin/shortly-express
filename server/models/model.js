@@ -54,9 +54,10 @@ class Model {
     let parsedOptions = parseData(options); // why do they parse the object? it seems like it is already parsed
     let queryString = `SELECT * FROM ${this.tablename} WHERE ${parsedOptions.string.join(' AND ')} LIMIT 1`;
     console.log(queryString);
-    console.log(Array.isArray(parsedOptions.values));
+    console.log(parsedOptions.values);
     return executeQuery(queryString, parsedOptions.values).then((results) => {
-      results[0];
+      console.log('query result: ', results[0]);
+      return results[0];
     });
   }
 
