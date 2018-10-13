@@ -51,9 +51,13 @@ class Model {
    * the conditions provided, only one will be provided upon fulfillment.
    */
   get(options) {
-    let parsedOptions = parseData(options);
+    let parsedOptions = parseData(options); // why do they parse the object? it seems like it is already parsed
     let queryString = `SELECT * FROM ${this.tablename} WHERE ${parsedOptions.string.join(' AND ')} LIMIT 1`;
-    return executeQuery(queryString, parsedOptions.values).then(results => results[0]);
+    console.log(queryString);
+    console.log(Array.isArray(parsedOptions.values));
+    return executeQuery(queryString, parsedOptions.values).then((results) => {
+      results[0];
+    });
   }
 
   /**
@@ -68,6 +72,7 @@ class Model {
   create(options) {
     let queryString = `INSERT INTO ${this.tablename} SET ?`;
     return executeQuery(queryString, options);
+    
   }
 
   /**

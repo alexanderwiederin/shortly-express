@@ -74,6 +74,68 @@ app.post('/links',
     });
 });
 
+app.post('/signup', 
+(req, res, next) => { // req.body = {id username password salt}
+  // check if database already has username
+  var username = req.body.username;
+  var password = req.body.password;
+  
+  return models.Users.get({username})
+  .then((results) => {
+    console.log(results);
+    if (results !== undefined) {
+      throw results
+    } else {
+      return models.Users.create({username, password})
+    }
+  })
+  .then((newUser) => {
+    models.create(newUser)
+  })
+  .then((userId) => {
+    throw userId;
+  })
+  .error(error => {
+    res.status(500).send(error);
+  })
+  .catch(userId => {
+    res.status(200).send(userId);
+  });
+});
+
+app.post('/login',
+(req, res, next) => {
+  var username = req.body.username;
+  var password = req.body.password;
+  
+  return models.Users.get({username})
+    .then((results) => {
+      console.log(results);
+      if (!results) {
+        console.log('username doesn\'t exist')
+        throw results
+      } else {
+        console.log('compare', password, results.password, results.salt);
+        models.Users.compare(password, results.password, results.salt);
+      }
+    })
+    .then(() => console.log('login success'))
+    .error(error => {
+      res.status(500).send(error);
+    })
+    .catch(userId => {
+      res.status(200).send(userId);
+    });
+});
+  //get username
+  //if username does not exist
+    //throw error
+  //else compare users object 
+    //if false console.log (error)
+  //console.log(login success)
+  //.then redirect user to index website
+  
+
 /************************************************************/
 // Write your authentication routes here
 /************************************************************/
